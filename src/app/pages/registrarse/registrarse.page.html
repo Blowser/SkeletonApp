@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Registrarse</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form (submit)="registrarse()">
+    <ion-item>
+      <ion-label position="stacked">Nombre</ion-label>
+      <ion-input type="text" [(ngModel)]="datosUsuario.nombre" name="nombre" placeholder="Ingrese su nombre"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Apellido</ion-label>
+      <ion-input type="text" [(ngModel)]="datosUsuario.apellido" name="apellido" placeholder="Ingrese su apellido"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Usuario</ion-label>
+      <ion-input type="text" [(ngModel)]="datosUsuario.usuario" name="usuario" placeholder="Ingrese un nombre de usuario"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Correo</ion-label>
+      <ion-input type="email" [(ngModel)]="datosUsuario.email" name="email" placeholder="Ingrese su correo"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Contraseña</ion-label>
+      <ion-input type="password" [(ngModel)]="datosUsuario.password" name="password" placeholder="Ingrese su contraseña"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Nivel de Educación</ion-label>
+      <ion-select [(ngModel)]="datosUsuario.nivelEducacion" name="nivelEducacion" placeholder="Seleccione un nivel">
+        <ion-select-option value="primaria">Primaria</ion-select-option>
+        <ion-select-option value="secundaria">Secundaria</ion-select-option>
+        <ion-select-option value="universitaria">Universitaria</ion-select-option>
+        <ion-select-option value="postgrado">Postgrado</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Fecha de Nacimiento</ion-label>
+      <ion-datetime display-format="YYYY-MM-DD" [(ngModel)]="datosUsuario.fechaNacimiento" name="fechaNacimiento" placeholder="Seleccione una fecha"></ion-datetime>
+    </ion-item>
+    <ion-button expand="block" type="submit">Registrarse</ion-button>
+  </form>
+</ion-content>

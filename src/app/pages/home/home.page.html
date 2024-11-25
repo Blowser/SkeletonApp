@@ -1,0 +1,92 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Home</ion-title>
+    <ion-buttons slot="end">
+      <!-- Botón de Logout -->
+      <ion-button color="danger" (click)="logout()">
+        <ion-icon name="log-out-outline"></ion-icon>
+        Salir
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Segmentos para navegar entre secciones -->
+  <ion-segment [(ngModel)]="selectedSegment">
+    <ion-segment-button value="anuncios">
+      <ion-label>Anuncios</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="mis-datos">
+      <ion-label>Mis Datos</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="mapa">
+      <ion-label>Mapa</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <!-- Contenido dinámico basado en el segmento seleccionado -->
+  <div [ngSwitch]="selectedSegment">
+    <!-- Sección Anuncios -->
+    <div *ngSwitchCase="'anuncios'">
+      <h2>Anuncios</h2>
+      <p>Aquí irán los anuncios.</p>
+    </div>
+
+    <!-- Sección Mis Datos -->
+  <!-- Sección Mis Datos -->
+<div *ngSwitchCase="'mis-datos'">
+  <h2>Mis Datos</h2>
+
+  <!-- Formulario para mostrar y editar datos -->
+  <form (ngSubmit)="guardarDatos()">
+    <ion-item>
+      <ion-label position="floating">Nombre</ion-label>
+      <ion-input type="text" [(ngModel)]="usuarioLogeado.nombre" name="nombre"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Apellido</ion-label>
+      <ion-input type="text" [(ngModel)]="usuarioLogeado.apellido" name="apellido"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Correo</ion-label>
+      <ion-input type="email" [(ngModel)]="usuarioLogeado.email" name="email"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Contraseña</ion-label>
+      <ion-input type="password" [(ngModel)]="usuarioLogeado.password" name="password"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Nivel de Educación</ion-label>
+      <ion-select [(ngModel)]="usuarioLogeado.nivelEducacion" name="nivelEducacion">
+        <ion-select-option value="primaria">Primaria</ion-select-option>
+        <ion-select-option value="secundaria">Secundaria</ion-select-option>
+        <ion-select-option value="universitaria">Universitaria</ion-select-option>
+        <ion-select-option value="postgrado">Postgrado</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Fecha de Nacimiento</ion-label>
+      <ion-datetime
+        display-format="YYYY-MM-DD"
+        [(ngModel)]="usuarioLogeado.fechaNacimiento"
+        name="fechaNacimiento"
+      ></ion-datetime>
+    </ion-item>
+    <ion-button expand="block" type="submit">Guardar Cambios</ion-button>
+  </form>
+</div>
+
+
+    <!-- Sección Mapa -->
+    <div *ngSwitchCase="'mapa'">
+      <h2>Mapa</h2>
+      <p>Aquí irá el mapa.</p>
+    </div>
+
+    <!-- Caso por defecto -->
+    <div *ngSwitchDefault>
+      <p>Seleccione una opción.</p>
+    </div>
+  </div>
+</ion-content>

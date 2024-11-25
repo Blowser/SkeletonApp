@@ -1,0 +1,36 @@
+#tituloapp{
+    text-align: center;
+    color:#c9b037;
+    font-size: 4rem;
+    font-weight: bolder;
+    margin-bottom: 10px;       
+  }
+  #titulocomienzo{
+    text-align: center;
+    color:#c9b037;
+    font-size: 1rem;
+    font-weight: bolder;
+    margin-bottom: 60px;       
+  }
+  #titulobienvenidalogin{
+    text-align: center;
+    color:#c9b037;
+    font-size: 2rem;
+    font-weight: bolder;
+    padding: 20px;       
+  }
+  
+  
+  ion-item {
+    margin-bottom: 40px; /* Reduce el espacio entre los elementos */
+  }
+  
+  ion-input, ion-select {
+    --padding-start: 0;
+    --padding-end: 0;
+  }
+  
+  .link-registro {
+    text-align: center;
+    margin-top: 15px;
+  }

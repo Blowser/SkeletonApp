@@ -1,0 +1,85 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/**
+ * Ionic Dark Mode
+ * -----------------------------------------------------
+ * For more info, please see:
+ * https://ionicframework.com/docs/theming/dark-mode
+ */
+
+/* @import "@ionic/angular/css/palettes/dark.always.css"; */
+/* @import "@ionic/angular/css/palettes/dark.class.css"; */
+@import "@ionic/angular/css/palettes/dark.system.css";
+:root {
+    /* Colores principales */
+    --ion-color-header-bg: #003366; /* Fondo del header (azul oscuro) */
+    --ion-color-header-text: #ffffff; /* Texto del header (blanco) */
+    --ion-color-content-bg: #004080; /* Fondo del contenido (azul intermedio) */
+    --ion-color-content-text: #f0f8ff; /* Texto del contenido (blanco suave) */
+    --ion-color-footer-bg: #003366; /* Fondo del footer (azul oscuro) */
+    --ion-color-footer-text: #ffffff; /* Texto del footer (blanco) */
+    --ion-color-button-bg: #0059b3; /* Fondo de los botones (azul más claro) */
+    --ion-color-button-text: #ffffff; /* Texto de los botones (blanco) */
+  
+    /* Inputs y selects */
+    ion-input, ion-select, ion-datetime {
+      --background: #0059b3; /* Fondo de los inputs (azul claro) */
+      --color: #ffffff; /* Texto de los inputs (blanco) */
+      --placeholder-color: #cce0ff; /* Color del placeholder (blanco azulado) */
+    }
+  
+    /* Estilos adicionales */
+    ion-item {
+      --background: #004080; /* Fondo de los ítems (azul intermedio) */
+      --color: #ffffff; /* Texto de los ítems (blanco) */
+    }
+  
+    ion-button {
+      --background: var(--ion-color-button-bg); /* Fondo del botón */
+      --color: var(--ion-color-button-text); /* Texto del botón */
+      --border-radius: 8px; /* Bordes redondeados */
+      --box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* Sombra */
+    }
+  
+    .link-registro a {
+      color: #add8e6; /* Color del enlace (azul claro) */
+      text-decoration: underline;
+    }
+  
+    /* Títulos */
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--ion-color-header-text);
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Sombra en el texto */
+    }
+  
+    /* Texto general */
+    p, span, ion-label {
+      color: var(--ion-color-content-text);
+    }
+  }
+  
