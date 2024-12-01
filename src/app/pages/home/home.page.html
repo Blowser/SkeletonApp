@@ -2,7 +2,6 @@
   <ion-toolbar>
     <ion-title>Home</ion-title>
     <ion-buttons slot="end">
-      <!-- Botón de Logout -->
       <ion-button color="danger" (click)="logout()">
         <ion-icon name="log-out-outline"></ion-icon>
         Salir
@@ -100,7 +99,7 @@
     <!-- Sección Mapa -->
     <div *ngSwitchCase="'mapa'">
       <h2>Mapa</h2>
-      <div id="map" style="height: 400px; width: 100%;"></div>
+      <div id="map" [style.display]="selectedSegment === 'mapa' ? 'block' : 'none'" style="height: 400px;"></div>
     </div>
 
     <!-- Caso por defecto -->
