@@ -34,59 +34,60 @@
     </div>
 
     <!-- Sección Mis Datos -->
-  <!-- Sección Mis Datos -->
-<div *ngSwitchCase="'mis-datos'">
-  <h2>Mis Datos</h2>
+    <div *ngSwitchCase="'mis-datos'">
+      <h2>Mis Datos</h2>
 
-  <!-- Formulario para mostrar y editar datos -->
-  <form (ngSubmit)="guardarDatos()">
-    <ion-item>
-      <ion-label position="floating">Nombre</ion-label>
-      <ion-input type="text" [(ngModel)]="usuarioLogeado.nombre" name="nombre"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">Apellido</ion-label>
-      <ion-input type="text" [(ngModel)]="usuarioLogeado.apellido" name="apellido"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">Correo</ion-label>
-      <ion-input type="email" [(ngModel)]="usuarioLogeado.email" name="email"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">Contraseña</ion-label>
-      <ion-input type="password" [(ngModel)]="usuarioLogeado.password" name="password"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">Nivel de Educación</ion-label>
-      <ion-select [(ngModel)]="usuarioLogeado.nivelEducacion" name="nivelEducacion">
-        <ion-select-option value="primaria">Primaria</ion-select-option>
-        <ion-select-option value="secundaria">Secundaria</ion-select-option>
-        <ion-select-option value="universitaria">Universitaria</ion-select-option>
-        <ion-select-option value="postgrado">Postgrado</ion-select-option>
-      </ion-select>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">Fecha de Nacimiento</ion-label>
-      <ion-datetime
-        display-format="YYYY-MM-DD"
-        [(ngModel)]="usuarioLogeado.fechaNacimiento"
-        name="fechaNacimiento"
-      ></ion-datetime>
-    </ion-item>
-    <ion-button expand="block" type="submit">Guardar Cambios</ion-button>
-  </form>
-</div>
-
+      <!-- Formulario para mostrar y editar datos -->
+      <form (ngSubmit)="guardarDatos()">
+        <ion-item>
+          <ion-label position="floating">Nombre</ion-label>
+          <ion-input type="text" [(ngModel)]="usuarioLogeado.nombre" name="nombre"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Apellido</ion-label>
+          <ion-input type="text" [(ngModel)]="usuarioLogeado.apellido" name="apellido"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Correo</ion-label>
+          <ion-input type="email" [(ngModel)]="usuarioLogeado.email" name="email"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Contraseña</ion-label>
+          <ion-input type="password" [(ngModel)]="usuarioLogeado.password" name="password"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Nivel de Educación</ion-label>
+          <ion-select [(ngModel)]="usuarioLogeado.nivelEducacion" name="nivelEducacion">
+            <ion-select-option value="primaria">Primaria</ion-select-option>
+            <ion-select-option value="secundaria">Secundaria</ion-select-option>
+            <ion-select-option value="universitaria">Universitaria</ion-select-option>
+            <ion-select-option value="postgrado">Postgrado</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Fecha de Nacimiento</ion-label>
+          <ion-datetime
+            display-format="YYYY-MM-DD"
+            [(ngModel)]="usuarioLogeado.fechaNacimiento"
+            name="fechaNacimiento"
+          ></ion-datetime>
+        </ion-item>
+        <ion-button expand="block" type="submit">Guardar Cambios</ion-button>
+      </form>
+    </div>
 
     <!-- Sección Mapa -->
     <div *ngSwitchCase="'mapa'">
       <h2>Mapa</h2>
-      <p>Aquí irá el mapa.</p>
+      <div *ngIf="currentPosition; else noLocation">
+        <p><strong>Latitud:</strong> {{ currentPosition.latitude }}</p>
+        <p><strong>Longitud:</strong> {{ currentPosition.longitude }}</p>
+        <ion-button expand="block" (click)="obtenerUbicacion()">Actualizar Ubicación</ion-button>
+      </div>
+      <ng-template #noLocation>
+        <p>No se pudo obtener la ubicación. Intente nuevamente.</p>
+        <ion-button expand="block" (click)="obtenerUbicacion()">Intentar de nuevo</ion-button>
+      </ng-template>
     </div>
-
-    <!-- Caso por defecto -->
-    <div *ngSwitchDefault>
-      <p>Seleccione una opción.</p>
-    </div>
-  </div>
+  </div> <!-- Cierra el div [ngSwitch] -->
 </ion-content>
