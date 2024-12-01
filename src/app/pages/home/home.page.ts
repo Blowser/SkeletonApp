@@ -67,14 +67,17 @@ export class HomePage implements OnInit, AfterViewInit {
 
   async segmentChanged(event: any) {
     if (event.detail.value === 'mapa') {
-      // Asegurar que el mapa se renderice correctamente al cambiar de pestaña
-      if (this.map) {
+      if (!this.mapInitialized) {
+        // Inicializa el mapa solo una vez
+        await this.initMap();
+      } else {
         setTimeout(() => {
           this.map.invalidateSize(); // Refresca el tamaño del mapa
         }, 200);
       }
     }
   }
+  
   
   // Método para cargar los datos del usuario desde SQLite
   async cargarDatosUsuario() {
