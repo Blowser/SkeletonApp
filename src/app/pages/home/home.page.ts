@@ -44,44 +44,62 @@ export class HomePage implements OnInit, AfterViewInit {
   async obtenerPermisos() {
     try {
       const permisos = await Geolocation.requestPermissions();
+      if (permisos.location === 'denied') {
+        alert('Permisos de geolocalización denegados. No se puede mostrar el mapa.');
+        return;
+      }
       console.log('Permisos de geolocalización obtenidos:', permisos);
     } catch (error) {
       console.error('Error al solicitar permisos de geolocalización:', error);
+      alert('Error al obtener permisos de geolocalización. Por favor, verifica la configuración de tu dispositivo.');
     }
   }
+  
 
   async initMap() {
     try {
+      if (this.map) {
+        console.log('El mapa ya está inicializado.');
+        return;
+      }
+  
       // Obtener la ubicación actual
       const position = await Geolocation.getCurrentPosition();
       this.currentPosition = {
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
       };
-
+  
       // Inicializar el mapa centrado en la ubicación actual
       this.map = L.map('map').setView(
         [this.currentPosition.latitude, this.currentPosition.longitude],
         13
       );
-
+  
       // Agregar capa de mapa (OpenStreetMap)
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(this.map);
-
+  
       // Agregar marcador en la ubicación actual
       L.marker([this.currentPosition.latitude, this.currentPosition.longitude])
         .addTo(this.map)
         .bindPopup('Tu ubicación actual')
         .openPopup();
-
+  
       console.log('Mapa inicializado en:', this.currentPosition);
     } catch (error) {
       console.error('Error al inicializar el mapa:', error);
     }
   }
-
+  segmentChanged(event: any) {
+    this.selectedSegment = event.detail.value;
+  
+    if (this.selectedSegment === 'mapa') {
+      this.initMap();
+    }
+  }
+  
   // Método para cargar los datos del usuario desde SQLite
   async cargarDatosUsuario() {
     const usuario = localStorage.getItem('usuarioLogeado');
