@@ -14,7 +14,7 @@ export class HomePage implements OnInit, AfterViewInit {
   selectedSegment: string = 'anuncios'; // Segmento seleccionado
   usuarioLogeado: any = {}; // Datos del usuario
   map: any; // Referencia al mapa de Leaflet
-  mapInitialized: boolean = false; // Para asegurarnos de inicializar el mapa solo una vez
+  mapInitialized: boolean = false; // Para evitar múltiples inicializaciones
 
   constructor(
     private menuCtrl: MenuController,
@@ -28,46 +28,51 @@ export class HomePage implements OnInit, AfterViewInit {
   }
 
   async ngAfterViewInit() {
-    // Inicializamos el mapa al cargar la app
+    // Inicializar el mapa al cargar la app
     await this.initMap();
   }
 
   async initMap() {
     try {
-      // Si el mapa ya está inicializado, no lo volvemos a crear
+      // Evitar inicializar el mapa más de una vez
       if (this.mapInitialized) return;
 
-      // Obtener ubicación actual
+      // Obtener la ubicación actual
       const position = await Geolocation.getCurrentPosition();
       const { latitude, longitude } = position.coords;
 
-      // Inicializar el mapa centrado en la ubicación
-      this.map = L.map('map').setView([latitude, longitude], 13);
+      // Crear el mapa centrado en la ubicación actual
+      this.map = L.map('map', { attributionControl: false }).setView(
+        [latitude, longitude],
+        13
+      );
 
-      // Agregar capa de OpenStreetMap
+      // Agregar la capa de OpenStreetMap
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors',
       }).addTo(this.map);
 
-      // Agregar marcador de la ubicación actual
+      // Agregar un marcador en la ubicación actual
       L.marker([latitude, longitude])
         .addTo(this.map)
         .bindPopup('Tu ubicación actual')
         .openPopup();
 
       this.mapInitialized = true; // Marcar como inicializado
-      console.log('Mapa inicializado en:', { latitude, longitude });
+      console.log('Mapa inicializado correctamente.');
     } catch (error) {
       console.error('Error al inicializar el mapa:', error);
     }
   }
 
   async segmentChanged(event: any) {
-    // Si el segmento activo es 'mapa', refrescamos la vista del mapa
-    if (event.detail.value === 'mapa' && this.map) {
-      setTimeout(() => {
-        this.map.invalidateSize(); // Asegurar que el mapa se renderice correctamente
-      }, 200);
+    if (event.detail.value === 'mapa') {
+      // Asegurar que el mapa se renderice correctamente al cambiar de pestaña
+      if (this.map) {
+        setTimeout(() => {
+          this.map.invalidateSize(); // Refresca el tamaño del mapa
+        }, 200);
+      }
     }
   }
   
