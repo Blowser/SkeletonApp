@@ -41,26 +41,47 @@
       <form (ngSubmit)="guardarDatos()">
         <ion-item>
           <ion-label position="floating">Nombre</ion-label>
-          <ion-input type="text" [(ngModel)]="usuarioLogeado.nombre" name="nombre"></ion-input>
+          <ion-input
+            type="text"
+            [(ngModel)]="usuarioLogeado.nombre"
+            name="nombre"
+          ></ion-input>
         </ion-item>
         <ion-item>
           <ion-label position="floating">Apellido</ion-label>
-          <ion-input type="text" [(ngModel)]="usuarioLogeado.apellido" name="apellido"></ion-input>
+          <ion-input
+            type="text"
+            [(ngModel)]="usuarioLogeado.apellido"
+            name="apellido"
+          ></ion-input>
         </ion-item>
         <ion-item>
           <ion-label position="floating">Correo</ion-label>
-          <ion-input type="email" [(ngModel)]="usuarioLogeado.email" name="email"></ion-input>
+          <ion-input
+            type="email"
+            [(ngModel)]="usuarioLogeado.email"
+            name="email"
+          ></ion-input>
         </ion-item>
         <ion-item>
           <ion-label position="floating">Contraseña</ion-label>
-          <ion-input type="password" [(ngModel)]="usuarioLogeado.password" name="password"></ion-input>
+          <ion-input
+            type="password"
+            [(ngModel)]="usuarioLogeado.password"
+            name="password"
+          ></ion-input>
         </ion-item>
         <ion-item>
           <ion-label position="floating">Nivel de Educación</ion-label>
-          <ion-select [(ngModel)]="usuarioLogeado.nivelEducacion" name="nivelEducacion">
+          <ion-select
+            [(ngModel)]="usuarioLogeado.nivelEducacion"
+            name="nivelEducacion"
+          >
             <ion-select-option value="primaria">Primaria</ion-select-option>
             <ion-select-option value="secundaria">Secundaria</ion-select-option>
-            <ion-select-option value="universitaria">Universitaria</ion-select-option>
+            <ion-select-option value="universitaria">
+              Universitaria
+            </ion-select-option>
             <ion-select-option value="postgrado">Postgrado</ion-select-option>
           </ion-select>
         </ion-item>
@@ -79,16 +100,13 @@
     <!-- Sección Mapa -->
     <div *ngSwitchCase="'mapa'">
       <h2>Mapa</h2>
-      <div *ngIf="currentPosition; else noLocation">
-        <p><strong>Latitud:</strong> {{ currentPosition.latitude }}</p>
-        <p><strong>Longitud:</strong> {{ currentPosition.longitude }}</p>
-        <ion-button expand="block" (click)="obtenerUbicacion()">Actualizar Ubicación</ion-button>
-      </div>
-      <ng-template #noLocation>
-        <p>No se pudo obtener la ubicación. Intente nuevamente.</p>
-        <ion-button expand="block" (click)="obtenerUbicacion()">Intentar de nuevo</ion-button>
-      </ng-template>
+      <div id="map" style="height: 400px;"></div>
+      <ion-button expand="block" (click)="obtenerUbicacion()">Actualizar Ubicación</ion-button>
     </div>
-    <div id="map" style="height: 100%;"></div>
-  </div> <!-- Cierra el div [ngSwitch] -->
+
+    <!-- Caso por defecto (opcional) -->
+    <div *ngSwitchDefault>
+      <p>Seleccione una opción.</p>
+    </div>
+  </div>
 </ion-content>
