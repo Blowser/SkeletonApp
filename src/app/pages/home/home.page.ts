@@ -12,10 +12,9 @@ import * as L from 'leaflet';
 })
 export class HomePage implements OnInit, AfterViewInit {
   selectedSegment: string = 'anuncios'; // Segmento seleccionado
-  usuarioLogeado: any = {}; // Objeto para los datos del usuario
-  currentPosition: { latitude: number; longitude: number } | null = null;
-
-  map: any; // Variable para el mapa de Leaflet
+  usuarioLogeado: any = {}; // Datos del usuario
+  map: any; // Referencia al mapa de Leaflet
+  mapInitialized: boolean = false; // Para asegurarnos de inicializar el mapa solo una vez
 
   constructor(
     private menuCtrl: MenuController,
@@ -24,79 +23,51 @@ export class HomePage implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit() {
-    // Habilitar el menú lateral
     this.menuCtrl.enable(true);
-
-    // Cargar datos del usuario
     this.cargarDatosUsuario();
   }
 
   async ngAfterViewInit() {
-    // Solicitar permisos antes de inicializar el mapa
-    await this.obtenerPermisos();
-
-    // Inicializar el mapa cuando el segmento 'mapa' esté activo
-    if (this.selectedSegment === 'mapa') {
-      this.initMap();
-    }
+    // Inicializamos el mapa al cargar la app
+    await this.initMap();
   }
-
-  async obtenerPermisos() {
-    try {
-      const permisos = await Geolocation.requestPermissions();
-      if (permisos.location === 'denied') {
-        alert('Permisos de geolocalización denegados. No se puede mostrar el mapa.');
-        return;
-      }
-      console.log('Permisos de geolocalización obtenidos:', permisos);
-    } catch (error) {
-      console.error('Error al solicitar permisos de geolocalización:', error);
-      alert('Error al obtener permisos de geolocalización. Por favor, verifica la configuración de tu dispositivo.');
-    }
-  }
-  
 
   async initMap() {
     try {
-      if (this.map) {
-        console.log('El mapa ya está inicializado.');
-        return;
-      }
-  
-      // Obtener la ubicación actual
+      // Si el mapa ya está inicializado, no lo volvemos a crear
+      if (this.mapInitialized) return;
+
+      // Obtener ubicación actual
       const position = await Geolocation.getCurrentPosition();
-      this.currentPosition = {
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-      };
-  
-      // Inicializar el mapa centrado en la ubicación actual
-      this.map = L.map('map').setView(
-        [this.currentPosition.latitude, this.currentPosition.longitude],
-        13
-      );
-  
-      // Agregar capa de mapa (OpenStreetMap)
+      const { latitude, longitude } = position.coords;
+
+      // Inicializar el mapa centrado en la ubicación
+      this.map = L.map('map').setView([latitude, longitude], 13);
+
+      // Agregar capa de OpenStreetMap
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        attribution: '&copy; OpenStreetMap contributors',
       }).addTo(this.map);
-  
-      // Agregar marcador en la ubicación actual
-      L.marker([this.currentPosition.latitude, this.currentPosition.longitude])
+
+      // Agregar marcador de la ubicación actual
+      L.marker([latitude, longitude])
         .addTo(this.map)
         .bindPopup('Tu ubicación actual')
         .openPopup();
-  
-      console.log('Mapa inicializado en:', this.currentPosition);
+
+      this.mapInitialized = true; // Marcar como inicializado
+      console.log('Mapa inicializado en:', { latitude, longitude });
     } catch (error) {
       console.error('Error al inicializar el mapa:', error);
     }
   }
-  segmentChanged(event: any) {
-    this.selectedSegment = event.detail.value;
-  
-    if (this.selectedSegment === 'mapa') {
-      this.initMap();
+
+  async segmentChanged(event: any) {
+    // Si el segmento activo es 'mapa', refrescamos la vista del mapa
+    if (event.detail.value === 'mapa' && this.map) {
+      setTimeout(() => {
+        this.map.invalidateSize(); // Asegurar que el mapa se renderice correctamente
+      }, 200);
     }
   }
   
