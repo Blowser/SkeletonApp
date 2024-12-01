@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MenuController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { DataService } from '../../services/data.service';
+import { Geolocation } from '@capacitor/geolocation';
 
 @Component({
   selector: 'app-home',
@@ -11,6 +12,7 @@ import { DataService } from '../../services/data.service';
 export class HomePage implements OnInit {
   selectedSegment: string = 'anuncios'; // Segmento seleccionado
   usuarioLogeado: any = {}; // Objeto para los datos del usuario
+  currentPosition: { latitude: number; longitude: number } | null = null;
 
   constructor(
     private menuCtrl: MenuController,
@@ -24,6 +26,25 @@ export class HomePage implements OnInit {
 
     // Cargar datos del usuario
     this.cargarDatosUsuario();
+  }
+  async obtenerUbicacion() {
+    try {
+      const position = await Geolocation.getCurrentPosition();
+      this.currentPosition = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      };
+      console.log('Ubicación obtenida:', this.currentPosition);
+    } catch (error) {
+      console.error('Error obteniendo la ubicación:', error);
+    }
+  }
+
+  ionViewWillEnter() {
+    // Llama a la geolocalización al entrar en la vista
+    if (this.selectedSegment === 'mapa') {
+      this.obtenerUbicacion();
+    }
   }
 
   // Método para cargar los datos del usuario desde SQLite
