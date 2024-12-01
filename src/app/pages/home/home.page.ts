@@ -14,7 +14,7 @@ export class HomePage implements OnInit {
   selectedSegment: string = 'anuncios'; // Segmento seleccionado
   usuarioLogeado: any = {}; // Objeto para los datos del usuario
   currentPosition: { latitude: number; longitude: number } | null = null;
-  private map: L.Map | null = null; // Referencia al mapa de Leaflet
+  map: any; // Variable para el mapa de Leaflet
 
   constructor(
     private menuCtrl: MenuController,
@@ -29,62 +29,42 @@ export class HomePage implements OnInit {
     // Cargar datos del usuario
     this.cargarDatosUsuario();
 
-    // Inicializar el mapa cuando se cargue el componente
+    // Inicializar el mapa cuando la sección "mapa" está activa
     if (this.selectedSegment === 'mapa') {
-      this.initializeMap();
+      this.initMap();
     }
   }
 
-  async obtenerUbicacion() {
+  async initMap() {
     try {
+      // Obtener la ubicación actual
       const position = await Geolocation.getCurrentPosition();
       this.currentPosition = {
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
       };
-      console.log('Ubicación obtenida:', this.currentPosition);
 
-      // Actualizar la vista del mapa si ya está inicializado
-      if (this.map && this.currentPosition) {
-        this.map.setView(
-          [this.currentPosition.latitude, this.currentPosition.longitude],
-          13
-        );
+      // Inicializar el mapa centrado en la ubicación actual
+      this.map = L.map('map').setView(
+        [this.currentPosition.latitude, this.currentPosition.longitude],
+        13
+      );
 
-        // Agregar un marcador en la posición actual
-        L.marker([this.currentPosition.latitude, this.currentPosition.longitude])
-          .addTo(this.map)
-          .bindPopup('¡Estás aquí!')
-          .openPopup();
-      }
+      // Agregar capa de mapa (OpenStreetMap)
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(this.map);
+
+      // Agregar marcador en la ubicación actual
+      L.marker([this.currentPosition.latitude, this.currentPosition.longitude])
+        .addTo(this.map)
+        .bindPopup('Tu ubicación actual')
+        .openPopup();
+
+      console.log('Mapa inicializado en:', this.currentPosition);
     } catch (error) {
-      console.error('Error obteniendo la ubicación:', error);
+      console.error('Error al obtener la ubicación:', error);
     }
-  }
-
-  ionViewWillEnter() {
-    // Llama a la geolocalización y asegura que el mapa esté inicializado
-    if (this.selectedSegment === 'mapa') {
-      this.obtenerUbicacion();
-      this.initializeMap();
-    }
-  }
-
-  private initializeMap() {
-    if (this.map) {
-      // Si el mapa ya está inicializado, no hacer nada
-      return;
-    }
-
-    // Crear un mapa y centrarlo en una ubicación predeterminada
-    this.map = L.map('map').setView([51.505, -0.09], 13); // Coordenadas iniciales (Londres)
-
-    // Agregar la capa de mapa de OpenStreetMap
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors',
-    }).addTo(this.map);
-
-    console.log('Mapa inicializado.');
   }
 
   // Método para cargar los datos del usuario desde SQLite
