@@ -13,7 +13,7 @@
 
 <ion-content>
   <!-- Segmentos para navegar entre secciones -->
-  <ion-segment [(ngModel)]="selectedSegment">
+  <ion-segment [(ngModel)]="selectedSegment" (ionChange)="segmentChanged($event)">
     <ion-segment-button value="anuncios">
       <ion-label>Anuncios</ion-label>
     </ion-segment-button>
@@ -102,7 +102,6 @@
       <h2>Mapa</h2>
       <div id="map" style="height: 400px; width: 100%;"></div>
     </div>
-    
 
     <!-- Caso por defecto -->
     <div *ngSwitchDefault>
