@@ -34,32 +34,30 @@ export class HomePage implements OnInit, AfterViewInit {
 
   async initMap() {
     try {
-      // Evitar inicializar el mapa más de una vez
-      if (this.mapInitialized) return;
-
-      // Obtener la ubicación actual
       const position = await Geolocation.getCurrentPosition();
       const { latitude, longitude } = position.coords;
-
-      // Crear el mapa centrado en la ubicación actual
-      this.map = L.map('map', { attributionControl: false }).setView(
-        [latitude, longitude],
-        13
-      );
-
-      // Agregar la capa de OpenStreetMap
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors',
-      }).addTo(this.map);
-
-      // Agregar un marcador en la ubicación actual
-      L.marker([latitude, longitude])
-        .addTo(this.map)
-        .bindPopup('Tu ubicación actual')
-        .openPopup();
-
-      this.mapInitialized = true; // Marcar como inicializado
-      console.log('Mapa inicializado correctamente.');
+  
+      if (!this.mapInitialized) {
+        // Crear el mapa si no ha sido inicializado
+        this.map = L.map('map', { attributionControl: false }).setView(
+          [latitude, longitude],
+          13
+        );
+  
+        // Agregar la capa de OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap contributors',
+        }).addTo(this.map);
+  
+        // Agregar marcador en la ubicación actual
+        L.marker([latitude, longitude])
+          .addTo(this.map)
+          .bindPopup('Tu ubicación actual')
+          .openPopup();
+  
+        this.mapInitialized = true;
+        console.log('Mapa inicializado correctamente.');
+      }
     } catch (error) {
       console.error('Error al inicializar el mapa:', error);
     }
