@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { MenuController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { DataService } from '../../services/data.service';
@@ -10,10 +10,11 @@ import * as L from 'leaflet';
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
 })
-export class HomePage implements OnInit {
+export class HomePage implements OnInit, AfterViewInit {
   selectedSegment: string = 'anuncios'; // Segmento seleccionado
   usuarioLogeado: any = {}; // Objeto para los datos del usuario
   currentPosition: { latitude: number; longitude: number } | null = null;
+
   map: any; // Variable para el mapa de Leaflet
 
   constructor(
@@ -28,10 +29,24 @@ export class HomePage implements OnInit {
 
     // Cargar datos del usuario
     this.cargarDatosUsuario();
+  }
 
-    // Inicializar el mapa cuando la sección "mapa" está activa
+  async ngAfterViewInit() {
+    // Solicitar permisos antes de inicializar el mapa
+    await this.obtenerPermisos();
+
+    // Inicializar el mapa cuando el segmento 'mapa' esté activo
     if (this.selectedSegment === 'mapa') {
       this.initMap();
+    }
+  }
+
+  async obtenerPermisos() {
+    try {
+      const permisos = await Geolocation.requestPermissions();
+      console.log('Permisos de geolocalización obtenidos:', permisos);
+    } catch (error) {
+      console.error('Error al solicitar permisos de geolocalización:', error);
     }
   }
 
@@ -63,7 +78,7 @@ export class HomePage implements OnInit {
 
       console.log('Mapa inicializado en:', this.currentPosition);
     } catch (error) {
-      console.error('Error al obtener la ubicación:', error);
+      console.error('Error al inicializar el mapa:', error);
     }
   }
 
