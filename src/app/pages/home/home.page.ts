@@ -1,9 +1,22 @@
+
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { MenuController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { Geolocation } from '@capacitor/geolocation';
 import * as L from 'leaflet';
+interface ReporteMascota {
+  latitude: number;
+  longitude: number;
+  name: string;
+  description: string;
+}
+
+
+
+
+
+
 
 @Component({
   selector: 'app-home',
@@ -15,7 +28,9 @@ export class HomePage implements OnInit, AfterViewInit {
   usuarioLogeado: any = {}; // Datos del usuario
   map: any; // Referencia al mapa de Leaflet
   mapInitialized: boolean = false; // Para evitar múltiples inicializaciones
-
+  mascotasPerdidas: { latitude: number; longitude: number; name: string; description: string }[] = [];
+  currentPosition: { latitude: number; longitude: number } | null = null;
+  
   constructor(
     private menuCtrl: MenuController,
     private router: Router,
@@ -26,7 +41,36 @@ export class HomePage implements OnInit, AfterViewInit {
     this.menuCtrl.enable(true);
     this.cargarDatosUsuario();
   }
-
+  addMarkerOnClick() {
+    this.map.on('click', (event: any) => {
+      const { lat, lng } = event.latlng;
+  
+      // Abre un prompt para pedir datos del marcador
+      const name = prompt('Nombre de la mascota:');
+      const description = prompt('Descripción de la mascota:');
+  
+      if (name && description) {
+        // Crea un marcador con los datos
+        const marker = L.marker([lat, lng])
+          .addTo(this.map)
+          .bindPopup(`<b>${name}</b><br>${description}`)
+          .openPopup();
+  
+        // Agrega los datos al array
+        this.mascotasPerdidas.push({
+          latitude: lat,
+          longitude: lng,
+          name: name,
+          description: description,
+        });
+  
+        console.log('Marcador agregado:', { lat, lng, name, description });
+      } else {
+        alert('Debe completar todos los datos.');
+      }
+    });
+  }
+  
   async ngAfterViewInit() {
     // Inicializar el mapa al cargar la app
     await this.initMap();
@@ -35,33 +79,27 @@ export class HomePage implements OnInit, AfterViewInit {
   async initMap() {
     try {
       const position = await Geolocation.getCurrentPosition();
-      const { latitude, longitude } = position.coords;
+      this.currentPosition = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      };
   
-      if (!this.mapInitialized) {
-        // Crear el mapa si no ha sido inicializado
-        this.map = L.map('map', { attributionControl: false }).setView(
-          [latitude, longitude],
-          13
-        );
+      this.map = L.map('map').setView(
+        [this.currentPosition.latitude, this.currentPosition.longitude],
+        13
+      );
   
-        // Agregar la capa de OpenStreetMap
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; OpenStreetMap contributors',
-        }).addTo(this.map);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors',
+      }).addTo(this.map);
   
-        // Agregar marcador en la ubicación actual
-        L.marker([latitude, longitude])
-          .addTo(this.map)
-          .bindPopup('Tu ubicación actual')
-          .openPopup();
-  
-        this.mapInitialized = true;
-        console.log('Mapa inicializado correctamente.');
-      }
+      // Llama al método para agregar marcadores
+      this.addMarkerOnClick();
     } catch (error) {
       console.error('Error al inicializar el mapa:', error);
     }
   }
+  
 
   async segmentChanged(event: any) {
     if (event.detail.value === 'mapa') {
