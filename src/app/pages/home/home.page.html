@@ -11,7 +11,7 @@
 </ion-header>
 
 <ion-content>
-  <!-- Segmentos para navegar entre secciones -->
+  <!-- Segmentos para navegar entre secciones,  NO TOCAR --> 
   <ion-segment [(ngModel)]="selectedSegment" (ionChange)="segmentChanged($event)">
     <ion-segment-button value="anuncios">
       <ion-label>Anuncios</ion-label>
@@ -24,13 +24,29 @@
     </ion-segment-button>
   </ion-segment>
 
-  <!-- Contenido dinámico basado en el segmento seleccionado -->
+  <!-- Contenido dinámico basado en el segmento seleccionado, MODIFICABLE-->
   <div [ngSwitch]="selectedSegment">
     <!-- Sección Anuncios -->
     <div *ngSwitchCase="'anuncios'">
       <h2>Anuncios</h2>
-      <p>Aquí irán los anuncios.</p>
+      <div *ngIf="anuncios.length === 0">
+        <p>Cargando anuncios...</p>
+      </div>
+      <ion-card *ngFor="let anuncio of anuncios">
+        <img [src]="anuncio.imagen" alt="Imagen del anuncio" />
+        <ion-card-header>
+          <ion-card-title>{{ anuncio.titulo }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <p>{{ anuncio.descripcion }}</p>
+          <ion-button color="primary" fill="clear" [href]="anuncio.url" target="_blank">
+            Leer más
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
     </div>
+    
+    
 
     <!-- Sección Mis Datos -->
     <div *ngSwitchCase="'mis-datos'">
