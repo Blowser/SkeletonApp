@@ -3,7 +3,7 @@ import { MenuController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { Geolocation } from '@capacitor/geolocation';
-import { HttpClient } from '@angular/common/http'; // Importamos HttpClient para consumir la API
+import { HttpClient } from '@angular/common/http';
 import * as L from 'leaflet';
 
 interface ReporteMascota {
@@ -19,77 +19,64 @@ interface ReporteMascota {
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit, AfterViewInit {
-  selectedSegment: string = 'anuncios'; // Segmento seleccionado
-  usuarioLogeado: any = {}; // Datos del usuario
-  map: any; // Referencia al mapa de Leaflet
-  mapInitialized: boolean = false; // Para evitar múltiples inicializaciones
+  selectedSegment: string = 'anuncios';
+  usuarioLogeado: any = {};
+  map: any;
   mascotasPerdidas: ReporteMascota[] = [];
   currentPosition: { latitude: number; longitude: number } | null = null;
-  anuncios: any[] = []; // Arreglo para almacenar los anuncios obtenidos de la API
+  anuncios: any[] = [];
 
   constructor(
     private menuCtrl: MenuController,
     private router: Router,
     private dataService: DataService,
-    private http: HttpClient // Inyección de HttpClient
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
     this.menuCtrl.enable(true);
-    this.cargarDatosUsuario(); // Carga los datos del usuario al inicializar
+    this.cargarDatosUsuario();
     if (this.selectedSegment === 'anuncios') {
-      this.obtenerAnuncios(); // Carga anuncios al inicio si el segmento es "anuncios"
+      this.obtenerAnuncios();
     }
   }
 
   async ngAfterViewInit() {
-    // Inicializar el mapa si el segmento seleccionado es "mapa"
     if (this.selectedSegment === 'mapa') {
       await this.initMap();
     }
   }
 
   async segmentChanged(event: any) {
-    const segment = event.detail.value; // Obtiene el segmento seleccionado
+    const segment = event.detail.value;
     console.log('Segmento cambiado a:', segment);
 
     if (segment === 'anuncios') {
-      console.log('Entrando en segmento anuncios');
-      this.obtenerAnuncios(); // Llama al método para obtener anuncios
+      this.obtenerAnuncios();
     } else if (segment === 'mis-datos') {
-      console.log('Entrando en segmento mis-datos');
-      try {
-        // Refresca los datos del usuario cuando se selecciona este segmento
-        await this.cargarDatosUsuario();
-        console.log('Datos del usuario actualizados para el segmento mis-datos.');
-      } catch (error) {
-        console.error('Error al actualizar datos del usuario:', error);
-      }
+      await this.cargarDatosUsuario();
     } else if (segment === 'mapa') {
-      console.log('Entrando en segmento mapa');
-      if (!this.mapInitialized) {
-        // Inicializa el mapa solo la primera vez que se selecciona este segmento
-        await this.initMap();
-        this.mapInitialized = true; // Marca el mapa como inicializado
-      } else {
-        setTimeout(() => {
-          this.map.invalidateSize(); // Refresca el tamaño del mapa si ya está inicializado
-        }, 200);
-      }
-    } else {
-      console.warn(`Segmento desconocido seleccionado: ${segment}`);
-      // Maneja un segmento inesperado si fuera necesario
+      await this.initMap(); // Reinicia el mapa cada vez que se accede al segmento
     }
   }
 
   async initMap() {
     try {
+      // Si el mapa ya existe, lo limpiamos
+      if (this.map) {
+        this.map.remove();
+        this.map = null;
+        console.log('Mapa reiniciado.');
+      }
+
+      // Obtenemos la ubicación actual
       const position = await Geolocation.getCurrentPosition();
       this.currentPosition = {
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
       };
 
+      // Inicializamos el mapa
       this.map = L.map('map').setView(
         [this.currentPosition.latitude, this.currentPosition.longitude],
         13
@@ -99,7 +86,6 @@ export class HomePage implements OnInit, AfterViewInit {
         attribution: '&copy; OpenStreetMap contributors',
       }).addTo(this.map);
 
-      // Llama al método para agregar marcadores
       this.addMarkerOnClick();
     } catch (error) {
       console.error('Error al inicializar el mapa:', error);
@@ -114,7 +100,7 @@ export class HomePage implements OnInit, AfterViewInit {
       const description = prompt('Descripción de la mascota:');
 
       if (name && description) {
-        const marker = L.marker([lat, lng])
+        L.marker([lat, lng])
           .addTo(this.map)
           .bindPopup(`<b>${name}</b><br>${description}`)
           .openPopup();
@@ -182,7 +168,6 @@ export class HomePage implements OnInit, AfterViewInit {
 
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
-        console.log('Datos recibidos de la API:', data);
         if (data.articles && data.articles.length > 0) {
           this.anuncios = data.articles.map((articulo: any) => ({
             titulo: articulo.title,
@@ -190,7 +175,6 @@ export class HomePage implements OnInit, AfterViewInit {
             url: articulo.url,
             imagen: articulo.urlToImage || 'assets/icon/favicon.png',
           }));
-          console.log('Anuncios procesados:', this.anuncios);
         } else {
           console.error('No se encontraron artículos en la respuesta de la API.');
         }
