@@ -24,7 +24,7 @@ export class RegistrarsePage implements OnInit {
     private dataService: DataService,
     private router: Router,
     private alertController: AlertController,
-    private menuCtrl: MenuController // Se agrega al constructor correctamente
+    private menuCtrl: MenuController
   ) {}
 
   // Desactivar el menú lateral al cargar la página
@@ -42,12 +42,34 @@ export class RegistrarsePage implements OnInit {
       return;
     }
 
+    // Validación de longitud y caracteres válidos en el usuario
+    if (usuario.length < 3 || usuario.length > 20) {
+      this.mostrarAlerta('Error', 'El nombre de usuario debe tener entre 3 y 20 caracteres.');
+      return;
+    }
+    if (!/^[a-zA-Z0-9_]+$/.test(usuario)) {
+      this.mostrarAlerta('Error', 'El nombre de usuario solo puede contener letras, números y guiones bajos.');
+      return;
+    }
+
+    // Validación del formato del correo electrónico
+    if (!this.validarEmail(email)) {
+      this.mostrarAlerta('Error', 'El correo electrónico no es válido. Verifique e intente nuevamente.');
+      return;
+    }
+
     // Validación de contraseña
     if (!this.validarPassword(password)) {
       this.mostrarAlerta(
         'Error',
-        'La contraseña debe tener al menos 8 caracteres, incluir una letra mayúscula, un número y opcionalmente un carácter especial.'
+        'La contraseña debe tener al menos 6 caracteres, incluir una letra mayúscula, un número y opcionalmente un carácter especial.'
       );
+      return;
+    }
+
+    // Validación de fecha de nacimiento
+    if (!this.validarFechaNacimiento(fechaNacimiento)) {
+      this.mostrarAlerta('Error', 'La fecha de nacimiento no es válida o es una fecha futura.');
       return;
     }
 
@@ -95,6 +117,18 @@ export class RegistrarsePage implements OnInit {
   private validarPassword(password: string): boolean {
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{6,}$/; // Expresión regular para validar contraseña
     return passwordRegex.test(password);
+  }
+
+  // Método para validar correos electrónicos
+  private validarEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Expresión regular para validar correo
+    return emailRegex.test(email);
+  }
+
+  // Método para validar la fecha de nacimiento
+  private validarFechaNacimiento(fechaNacimiento: string): boolean {
+    const fecha = new Date(fechaNacimiento);
+    return !isNaN(fecha.getTime()) && fecha <= new Date(); // La fecha debe ser válida y no futura
   }
 
   // Método para mostrar alertas
