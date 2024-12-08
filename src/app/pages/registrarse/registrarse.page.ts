@@ -36,8 +36,18 @@ export class RegistrarsePage implements OnInit {
   async registrarse() {
     const { nombre, apellido, usuario, email, password, nivelEducacion, fechaNacimiento } = this.datosUsuario;
 
+    // Validación de campos obligatorios
     if (!nombre || !apellido || !usuario || !email || !password) {
       this.mostrarAlerta('Error', 'Por favor complete todos los campos obligatorios.');
+      return;
+    }
+
+    // Validación de contraseña
+    if (!this.validarPassword(password)) {
+      this.mostrarAlerta(
+        'Error',
+        'La contraseña debe tener al menos 8 caracteres, incluir una letra mayúscula, un número y opcionalmente un carácter especial.'
+      );
       return;
     }
 
@@ -81,6 +91,12 @@ export class RegistrarsePage implements OnInit {
     }
   }
 
+  // Método para validar contraseñas
+  private validarPassword(password: string): boolean {
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{6,}$/; // Expresión regular para validar contraseña
+    return passwordRegex.test(password);
+  }
+
   // Método para mostrar alertas
   private async mostrarAlerta(titulo: string, mensaje: string) {
     try {
@@ -94,6 +110,4 @@ export class RegistrarsePage implements OnInit {
       console.error('Error al mostrar alerta:', error);
     }
   }
-
-
 }
